@@ -1,12 +1,12 @@
 <template>
   <div class="p-6 bg-gray-100 min-h-screen">
-    <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">Lista de Tarefas</h1>
+    <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">Task List</h1>
 
-    <!-- Formulário para adicionar nova tarefa -->
+    <!-- New Task -->
     <form @submit.prevent="addTodo" class="flex items-center gap-3 mb-6 max-w-xl mx-auto">
       <input
         v-model="newTodo.title"
-        placeholder="Nova tarefa"
+        placeholder="New Task"
         required
         class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
