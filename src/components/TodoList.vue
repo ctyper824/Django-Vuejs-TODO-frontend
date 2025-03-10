@@ -123,7 +123,7 @@ export default {
     // Buscar todas as tarefas
     fetchTodos() {
       axios
-        .get("http://127.0.0.1:8000/api/todos/")
+        .get("http://https://django-vuejs-todo-backend-1.onrender.com/api/todos/")
         .then((response) => {
           this.todos = response.data;
         })
@@ -134,7 +134,7 @@ export default {
     // Adicionar nova tarefa
     addTodo() {
       axios
-        .post("http://127.0.0.1:8000/api/todos/", this.newTodo)
+        .post("http://https://django-vuejs-todo-backend-1.onrender.com/api/todos/", this.newTodo)
         .then((response) => {
           this.todos.push(response.data); // Adiciona a nova tarefa na lista
           this.newTodo.title = ""; // Limpa o campo
@@ -146,7 +146,7 @@ export default {
     // Excluir uma tarefa
     deleteTodo(id) {
       axios
-        .delete(`http://127.0.0.1:8000/api/todos/${id}/`)
+        .delete(`http://https://django-vuejs-todo-backend-1.onrender.com/api/todos/${id}/`)
         .then(() => {
           this.todos = this.todos.filter((todo) => todo.id !== id); // Remove da lista localmente
         })
@@ -157,7 +157,7 @@ export default {
     // Alternar status de completado
     toggleComplete(todo) {
       axios
-        .patch(`http://127.0.0.1:8000/api/todos/${todo.id}/`, {
+        .patch(`http://https://django-vuejs-todo-backend-1.onrender.com/api/todos/${todo.id}/`, {
           completed: !todo.completed,
         })
         .then((response) => {
@@ -174,7 +174,7 @@ export default {
     // Atualizar tarefa editada
     updateTodo() {
       axios
-        .put(`http://127.0.0.1:8000/api/todos/${this.editingTodo.id}/`, this.editingTodo)
+        .put(`http://https://django-vuejs-todo-backend-1.onrender.com/api/todos/${this.editingTodo.id}/`, this.editingTodo)
         .then((response) => {
           const index = this.todos.findIndex((todo) => todo.id === response.data.id);
           this.todos[index] = response.data; // Atualiza a lista localmente
