@@ -123,7 +123,10 @@ export default {
     // Buscar todas as tarefas
     fetchTodos() {
       axios
-        .get("https://django-vuejs-todo-backend.onrender.com/api/todos/")
+        .get("https://django-vuejs-todo-backend.onrender.com/api/todos/", {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true
+        })
         .then((response) => {
           this.todos = response.data;
         })
@@ -134,7 +137,10 @@ export default {
     // Adicionar nova tarefa
     addTodo() {
       axios
-        .post("https://django-vuejs-todo-backend.onrender.com/api/todos/", this.newTodo)
+        .post("https://django-vuejs-todo-backend.onrender.com/api/todos/", this.newTodo, {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true
+        })
         .then((response) => {
           this.todos.push(response.data); // Adiciona a nova tarefa na lista
           this.newTodo.title = ""; // Limpa o campo
@@ -146,7 +152,10 @@ export default {
     // Excluir uma tarefa
     deleteTodo(id) {
       axios
-        .delete(`https://django-vuejs-todo-backend.onrender.com/api/todos/${id}/`)
+        .delete(`https://django-vuejs-todo-backend.onrender.com/api/todos/${id}/`, {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true
+        })
         .then(() => {
           this.todos = this.todos.filter((todo) => todo.id !== id); // Remove da lista localmente
         })
@@ -159,6 +168,8 @@ export default {
       axios
         .patch(`https://django-vuejs-todo-backend.onrender.com/api/todos/${todo.id}/`, {
           completed: !todo.completed,
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true
         })
         .then((response) => {
           todo.completed = response.data.completed; // Atualiza o status localmente
@@ -174,7 +185,10 @@ export default {
     // Atualizar tarefa editada
     updateTodo() {
       axios
-        .put(`https://django-vuejs-todo-backend.onrender.com/api/todos/${this.editingTodo.id}/`, this.editingTodo)
+        .put(`https://django-vuejs-todo-backend.onrender.com/api/todos/${this.editingTodo.id}/`, this.editingTodo, {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true
+        })
         .then((response) => {
           const index = this.todos.findIndex((todo) => todo.id === response.data.id);
           this.todos[index] = response.data; // Atualiza a lista localmente
