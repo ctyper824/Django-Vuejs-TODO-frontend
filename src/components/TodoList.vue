@@ -1,8 +1,8 @@
 <template>
-  <div class="p-6 bg-gray-100 min-h-screen">
+  <div class="p-6 ">
     <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">Task List</h1>
 
-    <!-- New Task -->
+    <!-- New Task Form -->
     <form @submit.prevent="addTodo" class="flex items-center gap-3 mb-6 max-w-xl mx-auto">
       <input
         v-model="newTodo.title"
@@ -12,15 +12,15 @@
       />
       <button
         type="submit"
-        class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+        class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition flex items-center"
+        :disabled="loading"
       >
-      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-  <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z" clip-rule="evenodd"/>
-</svg>
+        <fwb-spinner v-if="loading" color="green" class="m-1" />
+        <span v-else>Add</span>
       </button>
     </form>
 
-    <!-- Lista de tarefas -->
+    <!-- Task List -->
     <ul class="space-y-3 max-w-xl mx-auto">
       <li
         v-for="todo in todos"
@@ -38,48 +38,43 @@
           <button
             @click="deleteTodo(todo.id)"
             class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-lg transition"
+            :disabled="loading"
           >
-          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-  <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm5.757-1a1 1 0 1 0 0 2h8.486a1 1 0 1 0 0-2H7.757Z" clip-rule="evenodd"/>
-</svg>
-
+            <fwb-spinner v-if="loading" color="green" class="m-1" />
+            <svg v-else class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm5.757-1a1 1 0 1 0 0 2h8.486a1 1 0 1 0 0-2H7.757Z" clip-rule="evenodd"/>
+            </svg>
           </button>
           <button
-  @click="toggleComplete(todo)"
-  class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded-lg transition"
->
-  <!-- Mostrar ícone de "Completar" -->
-  <span v-if="!todo.completed">
-<svg class="w-6 h-6 text-gray-800 dark:text-white inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-  <rect width="20" height="20" x="2" y="2" rx="3" ry="3"></rect>
-  </svg>
-  </span>
-  
-  <!-- Mostrar ícone de "Desfazer" e texto -->
-  <span v-else>
-    <svg class="w-6 h-6 text-gray-800 dark:text-white inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-  <path fill-rule="evenodd" d="M9 11.293l-3.293-3.293a1 1 0 1 1 1.414-1.414l2.293 2.293 4.293-4.293a1 1 0 1 1 1.414 1.414l-5 5a1 1 0 0 1-1.414 0z" clip-rule="evenodd"/>
-  <rect width="20" height="20" x="2" y="2" rx="3" ry="3" fill="none" stroke="currentColor" stroke-width="2"></rect>
-</svg>
-
-  </span>
-  
-  <!-- Mostrar texto "Completar" ou "Desfazer" 
-  {{ todo.completed ? "Do it" : "Done" }} 
-  -->
-  
-</button>
-
+            @click="toggleComplete(todo)"
+            class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded-lg transition"
+            :disabled="loading"
+          >
+            <fwb-spinner v-if="loading" color="green" class="m-1" />
+            <span v-else>
+              <span v-if="!todo.completed">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <rect width="20" height="20" x="2" y="2" rx="3" ry="3"></rect>
+                </svg>
+              </span>
+              <span v-else>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M9 11.293l-3.293-3.293a1 1 0 1 1 1.414-1.414l2.293 2.293 4.293-4.293a1 1 0 1 1 1.414 1.414l-5 5a1 1 0 0 1-1.414 0z" clip-rule="evenodd"/>
+                  <rect width="20" height="20" x="2" y="2" rx="3" ry="3" fill="none" stroke="currentColor" stroke-width="2"></rect>
+                </svg>
+              </span>
+            </span>
+          </button>
         </div>
       </li>
     </ul>
 
-    <!-- Formulário para editar tarefa -->
+    <!-- Edit Task Form -->
     <div
       v-if="editingTodo"
       class="mt-8 max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md border border-gray-200"
     >
-      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Editar Tarefa</h2>
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Edit Task</h2>
       <form @submit.prevent="updateTodo" class="space-y-4">
         <input
           v-model="editingTodo.title"
@@ -90,14 +85,16 @@
           <button
             type="submit"
             class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+            :disabled="loading"
           >
-            Salvar
+            <fwb-spinner v-if="loading" color="green" class="m-1" />
+            <span v-else>Save</span>
           </button>
           <button
             @click="cancelEdit"
             class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg transition"
           >
-            Cancelar
+            Cancel
           </button>
         </div>
       </form>
@@ -105,103 +102,120 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, onMounted } from "vue";
 import axios from "axios";
+import { FwbSpinner } from "flowbite-vue";
 
-export default {
-  data() {
-    return {
-      todos: [], // Lista de tarefas
-      newTodo: { title: "", completed: false }, // Nova tarefa
-      editingTodo: null, // Tarefa em edição
-    };
-  },
-  mounted() {
-    this.fetchTodos();
-  },
-  methods: {
-    // Buscar todas as tarefas
-    fetchTodos() {
-      axios
-        .get("https://django-vuejs-todo-backend.onrender.com/api/todos/", {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true
-        })
-        .then((response) => {
-          this.todos = response.data;
-        })
-        .catch((error) => {
-          console.error("Erro ao buscar tarefas:", error);
-        });
-    },
-    // Adicionar nova tarefa
-    addTodo() {
-      axios
-        .post("https://django-vuejs-todo-backend.onrender.com/api/todos/", this.newTodo, {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true
-        })
-        .then((response) => {
-          this.todos.push(response.data); // Adiciona a nova tarefa na lista
-          this.newTodo.title = ""; // Limpa o campo
-        })
-        .catch((error) => {
-          console.error("Erro ao adicionar tarefa:", error);
-        });
-    },
-    // Excluir uma tarefa
-    deleteTodo(id) {
-      axios
-        .delete(`https://django-vuejs-todo-backend.onrender.com/api/todos/${id}/`, {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true
-        })
-        .then(() => {
-          this.todos = this.todos.filter((todo) => todo.id !== id); // Remove da lista localmente
-        })
-        .catch((error) => {
-          console.error("Erro ao remover tarefa:", error);
-        });
-    },
-    // Alternar status de completado
-    toggleComplete(todo) {
-      axios
-        .patch(`https://django-vuejs-todo-backend.onrender.com/api/todos/${todo.id}/`, {
-          completed: !todo.completed,
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true
-        })
-        .then((response) => {
-          todo.completed = response.data.completed; // Atualiza o status localmente
-        })
-        .catch((error) => {
-          console.error("Erro ao atualizar tarefa:", error);
-        });
-    },
-    // Iniciar edição de uma tarefa
-    editTodo(todo) {
-      this.editingTodo = { ...todo }; // Cria uma cópia para edição
-    },
-    // Atualizar tarefa editada
-    updateTodo() {
-      axios
-        .put(`https://django-vuejs-todo-backend.onrender.com/api/todos/${this.editingTodo.id}/`, this.editingTodo, {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true
-        })
-        .then((response) => {
-          const index = this.todos.findIndex((todo) => todo.id === response.data.id);
-          this.todos[index] = response.data; // Atualiza a lista localmente
-          this.editingTodo = null; // Limpa o formulário de edição
-        })
-        .catch((error) => {
-          console.error("Erro ao atualizar tarefa:", error);
-        });
-    },
-    // Cancelar edição
-    cancelEdit() {
-      this.editingTodo = null;
-    },
-  },
+// API Base URL
+const API_BASE_URL = "https://django-vuejs-todo-backend.onrender.com/api/todos/";
+
+// State
+const todos = ref([]);
+const newTodo = reactive({ title: "", completed: false });
+const editingTodo = ref(null);
+const loading = ref(false);
+
+// Fetch Tasks
+const fetchTodos = async () => {
+  try {
+    const response = await axios.get(API_BASE_URL, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    });
+    todos.value = response.data;
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+  }
 };
+
+// Add New Task
+const addTodo = async () => {
+  if (!newTodo.title.trim()) return;
+  loading.value = true;
+
+  try {
+    const response = await axios.post(API_BASE_URL, newTodo, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    });
+    todos.value.push(response.data);
+    newTodo.title = "";
+  } catch (error) {
+    console.error("Error adding task:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Delete Task
+const deleteTodo = async (id) => {
+  loading.value = true;
+  try {
+    await axios.delete(`${API_BASE_URL}${id}/`, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    });
+    todos.value = todos.value.filter((todo) => todo.id !== id);
+  } catch (error) {
+    console.error("Error deleting task:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Toggle Task Completion
+const toggleComplete = async (todo) => {
+  loading.value = true;
+  try {
+    const response = await axios.patch(
+      `${API_BASE_URL}${todo.id}/`,
+      { completed: !todo.completed },
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      }
+    );
+    todo.completed = response.data.completed;
+  } catch (error) {
+    console.error("Error updating task:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Edit Task
+const editTodo = (todo) => {
+  editingTodo.value = { ...todo };
+};
+
+// Update Edited Task
+const updateTodo = async () => {
+  loading.value = true;
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}${editingTodo.value.id}/`,
+      editingTodo.value,
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      }
+    );
+    const index = todos.value.findIndex((todo) => todo.id === response.data.id);
+    todos.value[index] = response.data;
+    editingTodo.value = null;
+  } catch (error) {
+    console.error("Error updating task:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Cancel Edit
+const cancelEdit = () => {
+  editingTodo.value = null;
+};
+
+// Fetch tasks on mount
+onMounted(fetchTodos);
 </script>
